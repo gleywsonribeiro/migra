@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../../WEB-INF/template/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="titulo">Entrada de Produto</ui:define>
+
+    <ui:define name="corpo">
+        <h:form id="formPedido">
+            <p:messages autoUpdate="true" closable="true"/>
+            <h:outputText value="Entrada de Produto" style="font-size: x-large; font-weight: 400; color: darkblue"/>
+            <p:toolbar style="margin-top: 20px">
+                <p:toolbarGroup>
+                    <p:commandButton value="Nova Entrada" process="@this" update="@form"/> 
+                    <p:commandButton value="Salvar" id="botaoSalvar" process="@this painel :formPedido:tabview:entrega" update="@form"/>
+                </p:toolbarGroup>
+                <p:toolbarGroup align="right">
+                    <!--<p:commandButton id="emitir" value="Emitir" process="@this" update="@form"/>-->
+                    <p:commandButton id="cancelar" value="Cancelar" />
+                    <!--<p:commandButton id="enviar" value="Enviar por e-mail" />-->
+
+                    <p:separator/>
+
+                    <p:commandButton value="Pesquisar" process="@this"/>
+                </p:toolbarGroup>
+            </p:toolbar>
+            
+            <p:defaultCommand target="botaoSalvar"/>
+
+            <p:panel>
+                
+                <ui:include src="/WEB-INF/include/pedido/capa.xhtml" />
+
+                <p:tabView style="margin-top: 20px" id="tabview">
+                    <p:tab title="Itens">
+                        <ui:include src="/WEB-INF/include/pedido/itens.xhtml"/>
+                        <!--                    <ui:include src="../WEB-INF/template/pedido/itensPedido.xhtml" />-->
+                    </p:tab>
+                    <p:tab title="Dados de entrega">
+                        <ui:include src="/WEB-INF/include/pedido/dadosEntrega.xhtml" />
+                    </p:tab>
+                    <p:tab title="Observação">
+                        <h:panelGroup layout="block" style="padding: 3px">
+                            <p:inputTextarea rows="6" style="width: 100%; resize: none" value="#{pedidoController.pedido.observacao}"/>
+                        </h:panelGroup>
+                    </p:tab>
+                </p:tabView>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

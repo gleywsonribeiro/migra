@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="titulo">Fornecedor</ui:define>
+
+    <ui:define name="corpo">
+        <h:form>
+            <p:messages autoUpdate="true" closable="true"/>
+            <p:toolbar style="margin-bottom: 5px">
+                <f:facet name="left">
+                    <p:commandButton value="Novo" icon="ui-icon-document" action="#{fornecedorController.novo()}" process="@this" update="@form"/> <!--outcome="/produtos/CadastroProduto"-->
+                    <p:commandButton value="Salvar" id="btSalvar" icon="ui-icon-disk" action="#{fornecedorController.salvar()}" update="@form"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:button value="Pesquisar" icon="ui-icon-search" outcome="pesquisa"/>
+                </f:facet>
+            </p:toolbar>
+            <!--<h1>Cadastro do Produto</h1>-->
+
+            <p:panel header="Cadastro de Fornecedor">
+                <h:panelGrid columns="2">
+                    <h:panelGroup style="float: left">
+                        <h:panelGrid style="float: left">
+                            <p:outputLabel value="Código" for="codigo"/>
+                            <p:inputText id="codigo" size="5" disabled="true" value="#{fornecedorController.fornecedor.id}"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid style="float: left">
+                            <p:outputLabel value="Nome" for="nome"/>
+                            <p:inputText id="nome" size="34" maxlength="50" value="#{fornecedorController.fornecedor.nome}" required="true"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid style="float: left">
+                            <p:outputLabel value="Razão Social" for="razaoSocial"/>
+                            <p:inputText id="razaoSocial" size="30" maxlength="50" value="#{fornecedorController.fornecedor.razaoSocial}"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid style="clear: left; float: left">
+                            <p:outputLabel value="Tipo de Pessoa" for="pessoa"/>
+                            <p:selectOneRadio id="pessoa" value="#{fornecedorController.fornecedor.tipoPessoa}" required="true" requiredMessage="Escolha o tipo de pessoa">
+                                <f:selectItems value="#{fornecedorController.tiposPessoa}" var="tipoPessoa" itemValue="#{tipoPessoa}" itemLabel="#{tipoPessoa.descricao}" />
+                                <p:ajax event="change" update="grupoLabel, grupoInput" process="@this" />
+                            </p:selectOneRadio>
+                        </h:panelGrid>
+                        <h:panelGrid style="float: left">
+                            <h:panelGroup id="grupoLabel">
+                                <p:outputLabel value="CPF:" for="cpf" rendered="#{fornecedorController.fornecedor.tipoPessoa eq 'FISICA'}" />
+                                <p:outputLabel value="CNPJ:" for="cnpj" rendered="#{fornecedorController.fornecedor.tipoPessoa eq 'JURIDICA'}" />
+                            </h:panelGroup>
+
+                            <h:panelGroup id="grupoInput">
+                                <p:inputMask mask="999.999.999-99" required="true" value="#{fornecedorController.fornecedor.documentoReceitaFederal}" id="cpf" rendered="#{fornecedorController.fornecedor.tipoPessoa eq 'FISICA'}" size="15"/>
+                                <p:inputMask mask="99.999.999/9999-99" required="true" value="#{fornecedorController.fornecedor.documentoReceitaFederal}" id="cnpj" rendered="#{fornecedorController.fornecedor.tipoPessoa eq 'JURIDICA'}" size="20" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </h:panelGrid>
+
+                <p:fieldset legend="Contato" style="width: 510px; margin-bottom: 10px">
+                    <h:panelGrid style="clear: left; float: left">
+                        <p:outputLabel value="E-mail" for="email"/>
+                        <p:inputText id="email" size="30" maxlength="50" value="#{fornecedorController.fornecedor.contato.email}"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid style="float: left">
+                        <p:outputLabel value="Telefone" for="telefone"/>
+                        <p:inputMask mask="(99)9999-9999" id="telefone" size="15" maxlength="15" value="#{fornecedorController.fornecedor.contato.telefone}"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid style="float: left">
+                        <p:outputLabel value="Celular" for="celular"/>
+                        <p:inputMask mask="(99)99999-9999" id="celular" size="15" maxlength="15" value="#{fornecedorController.fornecedor.contato.celular}"/>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:fieldset legend="Endereço" style="width: 510px">
+                    <h:panelGrid style="float: left">
+                        <p:outputLabel value="Endereço" for="endereco"/>
+                        <p:inputText id="endereco" value="#{fornecedorController.fornecedor.endereco.logradouro}" size="35"/>
+                    </h:panelGrid>
+                    <h:panelGrid style="float: left">
+                        <p:outputLabel value="Número" for="numero"/>
+                        <p:inputText id="numero" value="#{fornecedorController.fornecedor.endereco.numero}" size="10"/>
+                    </h:panelGrid>
+                    <h:panelGrid style="float: left">
+                        <p:outputLabel value="CEP" for="cep"/>
+                        <p:inputText id="cep" value="#{fornecedorController.fornecedor.endereco.cep}" size="10"/>
+                    </h:panelGrid>
+                    <h:panelGrid style="clear: left; float: left">
+                        <p:outputLabel value="Complemento" for="complemento"/>
+                        <p:inputText id="complemento" value="#{fornecedorController.fornecedor.endereco.complemento}" size="40"/>
+                    </h:panelGrid>
+                    <h:panelGrid style="clear: left; float: left">
+                        <p:outputLabel value="Estado" for="estado"/>
+                        <p:selectOneMenu id="estado" style="width: 100px" value="#{fornecedorController.fornecedor.endereco.estado}"
+                                         filter="true" filterMatchMode="startsWith"
+                                         required="true" requiredMessage="Escolha um Estado" converter="#{estadoConverter}">
+                            <f:selectItem itemLabel="Selecione"/>
+                            <f:selectItems value="#{estadosController.estados}" var="estado"
+                                           itemValue="#{estado}" itemLabel="#{estado.uf}"/>
+                            <p:ajax update="cidade" process="@this"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    <h:panelGrid style="float: left">
+                        <p:outputLabel value="Cidade" for="cidade"/>
+                        <p:selectOneMenu id="cidade" style="width: 100px" value="#{fornecedorController.fornecedor.endereco.cidade}"
+                                         filter="true" filterMatchMode="startsWith"
+                                         required="true" requiredMessage="Escolha uma Cidade" converter="#{cidadeConverter}">
+                            <f:selectItem itemLabel="Selecione"/>
+                            <f:selectItems value="#{fornecedorController.fornecedor.endereco.estado.cidades}" var="cidade"
+                                           itemValue="#{cidade}" itemLabel="#{cidade.nome}"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    <h:panelGrid style="float: left">
+                        <p:outputLabel value="Bairro" for="bairro"/>
+                        <p:inputText id="bairro" value="#{fornecedorController.fornecedor.endereco.bairro}" size="20"/>
+                    </h:panelGrid>
+                    <h:panelGrid style="clear: left; float: left">
+                        <p:outputLabel value="Observações" for="obs"/>
+                        <p:inputTextarea id="obs" value="" rows="4" cols="75" autoResize="false" style="resize: none"/>
+                    </h:panelGrid>
+                </p:fieldset>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="titulo">Fornecedores</ui:define>
+
+    <ui:define name="corpo">
+        <h:form>
+            <p:messages autoUpdate="true" closable="true"/>
+            <h:form id="formFornecedores">
+                <p:toolbar>
+                    <p:toolbarGroup>
+                        <p:commandButton value="Pesquisar"/>
+                    </p:toolbarGroup>
+                    <p:toolbarGroup align="right">
+                        <p:commandButton value="Novo" id="novo" action="cadastro?faces-redirect=true" actionListener="#{fornecedorController.novo()}"/>
+                    </p:toolbarGroup>
+                </p:toolbar>
+                <h:panelGrid id="painel" columns="2" style="margin-top: 5px;">
+                    <p:outputLabel value="Código" for="codigo"/>
+                    <p:inputText id="codigo" size="5"/>
+
+                    <p:outputLabel value="Nome do Fornecedor" for="nome"/>
+                    <p:inputText id="nome" size="60"/>
+                </h:panelGrid>
+
+                <p:dataTable id="fornecedorTable" value="#{fornecedorController.fornecedores}" paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                             var="fornecedor" style="margin-top: 20px;" emptyMessage="Não há registros." paginator="true" rows="5">
+                    <p:column headerText="Código" style="text-align: center; width: 100px">
+                        <h:outputText value="#{fornecedor.id}"/>
+                    </p:column>
+
+                    <p:column headerText="Nome">
+                        <h:outputText value="#{fornecedor.nome}"/>
+                    </p:column>
+                    
+                    <p:column headerText="CGC">
+                        <h:outputText value="#{fornecedor.documentoReceitaFederal}"/>
+                    </p:column>
+                    
+                    <p:column headerText="Telefone">
+                        <h:outputText value="#{fornecedor.contato.telefone}"/>
+                    </p:column>
+                    
+                    <p:column style="width: 100px; text-align: center">
+                        <p:commandButton icon="ui-icon-pencil" title="Editar" action="cadastro?faces-redirect=true">
+                            <f:setPropertyActionListener target="#{fornecedorController.fornecedor}" value="#{fornecedor}"/>
+                        </p:commandButton>
+                        <p:commandButton icon="ui-icon-trash" title="Excluir" action="#{fornecedorController.remover()}" update="fornecedorTable">
+                            <p:confirm header="Exclusão da Sede" message="Tem certeza que deseja excluir este fornecedor?" icon="ui-icon-alert"/>
+                            <f:setPropertyActionListener target="#{fornecedorController.fornecedor}" value="#{fornecedor}"/>
+                        </p:commandButton>                
+                    </p:column>
+                </p:dataTable>
+
+                <p:confirmDialog global="true">  
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+                </p:confirmDialog>
+            </h:form>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

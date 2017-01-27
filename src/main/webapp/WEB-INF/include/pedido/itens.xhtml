@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:panelGrid columns="4" id="item">
+        <h:panelGroup>
+            <p:watermark for="sku" value="Código"/>
+            <p:inputText id="sku" style="width: 110px" value="#{pedidoController.item.produto.id}"/>
+        </h:panelGroup>
+
+        <h:panelGroup>
+            <p:watermark for="produto" value="Produto"/>
+            <p:autoComplete id="produto" value="#{pedidoController.item.produto}" converter="#{produtoConverter}"
+                            var="produto" itemLabel="#{produto.descricao}" itemValue="#{produto}"
+                            completeMethod="#{pedidoController.buscaProdutoDescricao}" forceSelection="true"
+                            >
+                <p:ajax update="item" event="itemSelect"/>
+            </p:autoComplete>
+
+        </h:panelGroup>
+
+        <p:spinner id="qtd" value="#{pedidoController.item.quantidade}" required="true" min="1" size="5"/>
+
+        <p:commandButton style="margin-left: 5px" value="Inserir" icon="fa fa-shopping-cart" process="item"
+                         update="itens :formPedido:totalPedido :formPedido:subtotal item" action="#{pedidoController.adicionar()}"
+                         disabled="#{pedidoController.adicionarAtivo}"/>
+    </h:panelGrid>
+
+    <p:dataTable id="itens" paginatorAlwaysVisible="false" paginatorPosition="bottom" value="#{pedidoController.pedido.itens}" 
+                 var="item" style="margin-top: 5px;" emptyMessage="Sem itens." paginator="true" rows="20">
+
+        <p:column style="width: 40px; text-align: center">
+            <p:commandButton icon="fa fa-trash" action="#{pedidoController.removerItem()}" process="@this" 
+                             disabled="#{pedidoController.pedido.emitido}"
+                             update="itens :formPedido:totalPedido :formPedido:subtotal semEstoque">
+                <f:setPropertyActionListener target="#{pedidoController.item}" value="#{item}"/>
+            </p:commandButton>
+        </p:column>
+        <p:column headerText="Código" style="width: 100px">
+            <h:outputText value="#{item.produto.id}"/>
+        </p:column>
+        <p:column headerText="Produto">
+            <h:outputText value="#{item.produto.descricao}"/>
+        </p:column>
+        <p:column headerText="Valor Unitário" style="width: 100px; text-align: right">
+            <h:outputText value="#{item.produto.valorVenda}">
+                <f:convertNumber type="currency"/>
+            </h:outputText>
+        </p:column>
+        <p:column headerText="Quantidade" style="width: 80px;" >
+            <p:spinner value="#{item.quantidade}" min="1" size="5" disabled="#{pedidoController.pedido.emitido}">
+                <p:ajax event="change" process="@this" listener="#{pedidoController.recalcularPedido()}"
+                        update="itens :formPedido:totalPedido :formPedido:subtotal semEstoque"/>
+            </p:spinner>
+        </p:column>
+        <p:column headerText="Estoque" style="width: 100px; text-align: right">
+            <h:outputText value="#{item.produto.estoqueAtual}" />
+            <h:graphicImage library="imagens" name="alerta.png" id="semEstoque"
+                            style="vertical-align: bottom; margin-left: 5px" 
+                            rendered="#{item.estoqueInsuficiente}" />
+
+            <p:tooltip for="semEstoque" value="Estoque insuficiente"
+                       rendered="#{item.estoqueInsuficiente}" />
+        </p:column>
+
+        <p:column headerText="Total" style="width: 100px; text-align: right">
+            <h:outputText value="#{item.valorTotal}">
+                <f:convertNumber type="currency"/>
+            </h:outputText>
+        </p:column>
+
+        <p:columnGroup type="footer">
+            <p:row>
+                <p:column colspan="6" footerText="Subtotal" style="text-align: right; color: darkgreen" />
+                <p:column style="text-align: right; color: darkgreen">
+                    <f:facet name="footer">
+                        <h:outputText value="#{pedidoController.pedido.valorSubtotal}">
+                            <f:convertNumber type="currency"/>
+                        </h:outputText>
+                    </f:facet>
+                </p:column>
+            </p:row>
+        </p:columnGroup>
+    </p:dataTable>
+</ui:composition>

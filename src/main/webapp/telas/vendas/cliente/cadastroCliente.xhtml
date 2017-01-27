@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../../WEB-INF/template/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="titulo">Cliente</ui:define>
+
+    <ui:define name="corpo">
+        <h:form>
+            <p:messages autoUpdate="true" closable="true"/>
+            <p:toolbar style="margin-bottom: 5px">
+                <f:facet name="left">
+                    <p:commandButton value="Novo" icon="fa fa-file" action="#{clienteController.novo()}" process="@this" update="@form"/>
+                    <p:commandButton value="Salvar" id="btSalvar" icon="fa fa-save" action="#{clienteController.salvar()}" update="@form"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:button value="Pesquisar" icon="fa fa-search" outcome="pesquisaCliente"/>
+                </f:facet>
+            </p:toolbar>
+            <!--<h1>Cadastro do Produto</h1>-->
+
+            <p:panel header="Cadastro de Cliente">
+                <h:panelGrid columns="2">
+                    <h:panelGroup style="float: left">
+                        <h:panelGrid style="float: left">
+                            <p:outputLabel value="Código" for="codigo"/>
+                            <p:inputText id="codigo" size="5" disabled="true" value="#{clienteController.cliente.id}"/>
+                        </h:panelGrid>
+                        <h:panelGrid style="float: left">
+                            <p:outputLabel value="Nome" for="nome"/>
+                            <p:inputText id="nome" size="67" maxlength="50" value="#{clienteController.cliente.nome}" required="true"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid style="clear: left; float: left">
+                            <p:outputLabel value="Tipo de Pessoa" for="pessoa"/>
+                            <p:selectOneRadio id="pessoa" value="#{clienteController.cliente.tipo}" required="true" requiredMessage="Escolha o tipo de pessoa">
+                                <f:selectItems value="#{clienteController.tiposPessoa}" var="tipoPessoa" itemValue="#{tipoPessoa}" itemLabel="#{tipoPessoa.descricao}" />
+                                <p:ajax event="change" update="grupoLabel, grupoInput, grupoNascimento, grupoRG" process="@this" />
+                            </p:selectOneRadio>
+                        </h:panelGrid>
+                        <h:panelGrid style="float: left">
+                            <h:panelGroup id="grupoLabel">
+                                <p:outputLabel value="CPF:" for="cpf" rendered="#{clienteController.cliente.tipo eq 'FISICA'}" />
+                                <p:outputLabel value="CNPJ:" for="cnpj" rendered="#{clienteController.cliente.tipo eq 'JURIDICA'}" />
+                            </h:panelGroup>
+
+                            <h:panelGroup id="grupoInput">
+                                <p:inputMask mask="999.999.999-99" required="true" value="#{clienteController.cliente.documentoReceitaFederal}" id="cpf" rendered="#{clienteController.cliente.tipo eq 'FISICA'}" size="15"/>
+                                <p:inputMask mask="99.999.999/9999-99" required="true" value="#{clienteController.cliente.documentoReceitaFederal}" id="cnpj" rendered="#{clienteController.cliente.tipo eq 'JURIDICA'}" size="20" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+                        <h:panelGrid style="float: left" id="grupoNascimento">
+                            <p:outputLabel value="Data de Nascimento" for="dtCadastro" rendered="#{clienteController.cliente.tipo eq 'FISICA'}"/>
+                            <p:calendar id="dtCadastro" value="#{clienteController.cliente.dataNascimento}" size="15"
+                                        rendered="#{clienteController.cliente.tipo eq 'FISICA'}" pattern="dd/MM/yyyy" />
+                        </h:panelGrid>
+                        <h:panelGrid style="float: left" id="grupoRG">
+                            <p:outputLabel value="RG" for="rg" rendered="#{clienteController.cliente.tipo eq 'FISICA'}"/>
+                            <p:inputText id="rg" value="#{clienteController.cliente.rg}" size="13" maxlength="10" 
+                                        rendered="#{clienteController.cliente.tipo eq 'FISICA'}"/>
+                        </h:panelGrid>
+                    </h:panelGroup>
+                </h:panelGrid>
+
+                <p:fieldset legend="Contato" style="width: 510px; margin-bottom: 10px">
+                    <h:panelGrid style="clear: left; float: left">
+                        <p:outputLabel value="E-mail" for="email"/>
+                        <p:inputText id="email" value="#{clienteController.cliente.contato.email}" size="33"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid style="float: left">
+                        <p:outputLabel value="Celular" for="celular"/>
+                        <p:inputMask mask="(99)99999-9999" id="celular" size="15" maxlength="15" value="#{clienteController.cliente.contato.celular}"/>
+                    </h:panelGrid>
+
+                    <h:panelGrid style="float: left">
+                        <p:outputLabel value="Telefone" for="telefone"/>
+                        <p:inputMask mask="(99)9999-9999" id="telefone" size="15" maxlength="15" value="#{clienteController.cliente.contato.telefone}"/>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:fieldset legend="Endereço" style="width: 510px">
+                    <h:panelGrid style="float: left">
+                        <p:outputLabel value="Endereço" for="endereco"/>
+                        <p:inputText id="endereco" value="#{clienteController.cliente.endereco.logradouro}" size="35"/>
+                    </h:panelGrid>
+                    <h:panelGrid style="float: left">
+                        <p:outputLabel value="Número" for="numero"/>
+                        <p:inputText id="numero" value="#{clienteController.cliente.endereco.numero}" size="10"/>
+                    </h:panelGrid>
+                    <h:panelGrid style="float: left">
+                        <p:outputLabel value="CEP" for="cep"/>
+                        <p:inputText id="cep" value="#{clienteController.cliente.endereco.cep}" size="10"/>
+                    </h:panelGrid>
+                    <h:panelGrid style="clear: left; float: left">
+                        <p:outputLabel value="Complemento" for="complemento"/>
+                        <p:inputText id="complemento" value="#{clienteController.cliente.endereco.complemento}" size="40"/>
+                    </h:panelGrid>
+                    
+                    <h:panelGrid style="clear: left; float: left">
+                        <p:outputLabel value="Estado" for="estado"/>
+                        <p:selectOneMenu id="estado" style="width: 100px" value="#{clienteController.cliente.endereco.estado}"
+                                         filter="true" filterMatchMode="startsWith"
+                                         required="true" requiredMessage="Escolha um Estado" converter="#{estadoConverter}">
+                            <f:selectItem itemLabel="Selecione"/>
+                            <f:selectItems value="#{estadosController.estados}" var="estado"
+                                           itemValue="#{estado}" itemLabel="#{estado.uf}"/>
+                            <p:ajax update="cidade" process="@this"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+
+                    <h:panelGrid style="float: left">
+                        <p:outputLabel value="Cidade" for="cidade"/>
+                        <p:selectOneMenu id="cidade" style="width: 100px" value="#{clienteController.cliente.endereco.cidade}"
+                                         filter="true" filterMatchMode="startsWith"
+                                         required="true" requiredMessage="Escolha uma Cidade" converter="#{cidadeConverter}">
+                            <f:selectItem itemLabel="Selecione"/>
+                            <f:selectItems value="#{clienteController.cliente.endereco.estado.cidades}" var="cidade"
+                                           itemValue="#{cidade}" itemLabel="#{cidade.nome}"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    <h:panelGrid style="float: left">
+                        <p:outputLabel value="Bairro" for="bairro"/>
+                        <p:inputText id="bairro" value="#{clienteController.cliente.endereco.bairro}" size="20"/>
+                    </h:panelGrid>
+                </p:fieldset>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

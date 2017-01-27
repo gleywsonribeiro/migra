@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="titulo">Estoque</ui:define>
+
+    <ui:define name="corpo">
+        <f:metadata>
+            <f:viewAction action="#{cadastroProdutoController.validar()}" />
+        </f:metadata>
+
+        <h:form>
+            <p:messages autoUpdate="true" closable="true"/>
+            <p:toolbar style="margin-bottom: 5px">
+                <f:facet name="left">
+                    <p:commandButton value="Novo" icon="ui-icon-document" action="#{cadastroProdutoController.novo()}" process="@this" update="@form"/> <!--outcome="/produtos/CadastroProduto"-->
+                    <p:commandButton value="Salvar" id="btSalvar" icon="ui-icon-disk" action="#{cadastroProdutoController.salvar()}" update="@form"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#{cadastroProdutoController.finalizar()}" process="@this"/>
+                </f:facet>
+            </p:toolbar>
+            <!--<h1>Cadastro do Produto</h1>-->
+
+            <p:panel header="Cadastro de Produto">
+                <h:panelGrid columns="2">
+                    <h:panelGroup style="float: left">
+                        <h:panelGrid style="float: left">
+                            <p:outputLabel value="Código" for="codigo"/>
+                            <p:inputText id="codigo" size="5" disabled="true" value="#{cadastroProdutoController.produto.id}"/>
+                        </h:panelGrid>
+                        <h:panelGrid style="float: left">
+                            <p:outputLabel value="SKU" for="sku"/>
+                            <p:inputText id="sku" size="8" maxlength="10" value="#{cadastroProdutoController.produto.sku}"/>
+                        </h:panelGrid>
+                        <h:panelGrid style="float: left">
+                            <p:outputLabel value="Descrição do Produto" for="descricao"/>
+                            <p:inputText id="descricao" size="50" maxlength="50" value="#{cadastroProdutoController.produto.descricao}" required="true"/>
+                        </h:panelGrid>
+                        <h:panelGrid style="float: left">
+                            <p:outputLabel value="Categoria" for="categoria"/>
+                            <p:selectOneMenu id="categoria" style="width: 100px" value="#{cadastroProdutoController.produto.categoria}"
+                                             required="true" requiredMessage="A categoria deve ser informada" converter="#{categoriaConverter}">
+                                <f:selectItem itemLabel="Selecione"/>
+                                <f:selectItems value="#{categoriaController.categorias}" var="categoria"
+                                               itemValue="#{categoria}" itemLabel="#{categoria.nome}"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <h:panelGrid style="clear: left; float: left">
+                            <p:outputLabel value="Estoque Máximo" for="maximo"/>
+                            <p:spinner id="maximo" size="8" value="#{cadastroProdutoController.produto.estoqueMaximo}" required="true"/>
+                        </h:panelGrid>
+                        <h:panelGrid style="float: left">
+                            <p:outputLabel value="Estoque Mínimo" for="minimo"/>
+                            <p:spinner id="minimo" size="8" value="#{cadastroProdutoController.produto.estoqueMinimo}" required="true"/>
+                        </h:panelGrid>
+                        <h:panelGrid style="float: left">
+                            <p:outputLabel value="Valor de Custo" for="custo"/>
+                            <p:inputNumber id="custo" size="15" symbol="R$ " decimalSeparator=","
+                                           value="#{cadastroProdutoController.produto.valorCusto}"
+                                           thousandSeparator="." decimalPlaces="2" required="true"
+                                           requiredMessage="Por favor, informe o valor de custo">
+                                <p:ajax update="venda"
+                                        listener="#{cadastroProdutoController.produto.calculaValorVenda()}"
+                                        process="@this"/>
+                            </p:inputNumber>
+                        </h:panelGrid>
+                        
+                        <h:panelGrid style="float: left; margin-left: 15px; font-weight: bold; font-size: 1.1em; color: darkgreen">
+                            <p:outputLabel value="Valor de Venda" for="venda"/>
+                            <p:inputNumber id="venda" size="15" symbol="R$ " decimalSeparator=","
+                                           value="#{cadastroProdutoController.produto.valorVenda}"
+                                           thousandSeparator="." decimalPlaces="2" required="true"
+                                           requiredMessage="Por favor, informe o valor de venda">
+                                <p:ajax update="percentual"
+                                        listener="#{cadastroProdutoController.produto.calculaPercentual()}"
+                                        process="@this"/>
+                            </p:inputNumber>
+                        </h:panelGrid>
+
+                        <h:panelGrid style="float: left">
+                            <p:outputLabel value="Lucro (%)" for="percentual"/>
+                            <p:inputNumber id="percentual" size="7" symbol="%" symbolPosition="s" decimalSeparator="," thousandSeparator="."
+                                           required="true" value="#{cadastroProdutoController.produto.percentualLucro}"
+                                           requiredMessage="Por favor, informe o percentual de lucro">
+                                <p:ajax update="venda"
+                                        listener="#{cadastroProdutoController.produto.calculaValorVenda()}"
+                                        process="@this"/>
+                            </p:inputNumber>
+                        </h:panelGrid>
+                        
+                        <h:panelGrid style="float: left">
+                            <p:outputLabel value="Ativo?" for="ativo"/>
+                            <p:inputSwitch id="ativo" value="#{cadastroProdutoController.produto.ativo}" offLabel="não" onLabel="sim"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid style="clear: left; float: left; text-align: center; margin-top: 10px"
+                                     rendered="#{cadastroProdutoController.produto.possuiCodBarras}">
+                            <p:outputLabel value="Código de Barras" for="barcode"/>
+                            <p:barcode id="barcode" value="#{cadastroProdutoController.produto.codigoDeBarras}" type="code39"/>
+                        </h:panelGrid>
+
+
+
+                    </h:panelGroup>
+                </h:panelGrid>
+
+
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

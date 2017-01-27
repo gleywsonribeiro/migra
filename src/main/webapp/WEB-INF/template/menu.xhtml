@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+        <p:menubar styleClass="menu-sistema">
+            <p:submenu label="Vendas">
+                <p:menuitem value="Pedido/Consignação" outcome="/telas/vendas/pedido/cadastroPedido"/>
+                <p:menuitem value="Vendas"/>
+                <p:separator/>
+                <p:menuitem value="Clientes" outcome="/telas/vendas/cliente/cadastroCliente"/>
+            </p:submenu>
+            <p:submenu label="Estoque" styleClass="meumenu">
+                <p:menuitem value="Compras" />
+                <p:menuitem value="NF-e Entrada" outcome="/telas/estoque/entrada/entradaProduto"/>
+                <p:menuitem value="Produtos" outcome="/telas/produto/pesquisaProduto"/>
+                <p:menuitem value="Fornecedores" outcome="/telas/fornecedor/cadastro"/>
+                <p:separator/>
+                <p:menuitem value="Emissão de Etiquetas do Produto" outcome="/telas/estoque/geraEtiqueta"/>
+                <p:menuitem value="Estoque Mínimo Atual" />
+                <p:menuitem value="Estoque em Quantidade/Valores" />
+                <p:menuitem value="Produtos com Consignados" />
+                <p:separator/>
+                <p:menuitem value="Inventário" outcome="/telas/estoque/inventario"/>
+            </p:submenu>
+            <p:submenu label="Financeiro" styleClass="meumenu">
+                <p:submenu label="Contas a Pagar">
+                    <p:menuitem value="Lançamento"/>
+                    <p:menuitem value="Relatório de CP por Venda"/>
+                    <p:menuitem value="Relatório de CP por Cobrança"/>
+                </p:submenu>
+                <p:menuitem value="Contas a Receber"/>
+                <p:menuitem value="Contas Bancárias"/>
+                <p:menuitem value="Categorias" outcome="/telas/categoria/cadastro"/>
+                <p:menuitem value="Funcionários"/>
+                <p:menuitem value="Entidades"/>
+                <p:menuitem value="Métodos de Pagamento"/>
+                <p:separator/>
+                <p:menuitem value="Clientes em Inadimplência"/>
+                <p:menuitem value="Cobranças por Cobradores/Entidades"/>
+                <p:menuitem value="Detalhe de Caixa"/>
+            </p:submenu>
+            <p:submenu label="Relatórios" styleClass="meumenu">
+                <p:menuitem value="Análise Centro de Custo" />
+                <p:menuitem value="Fechamento de Caixa" />
+                <p:menuitem value="Vendas" />
+                <p:menuitem value="Despesas" />
+                <p:menuitem value="Lucro" />
+                <p:menuitem value="Compras" />
+                <p:menuitem value="Fluxo de Caixa" />
+                <p:separator/>
+                <p:menuitem value="Comissão de Vendedores" />
+                <p:menuitem value="Produtos em Estoque(R$) Custo e Venda" />
+                <p:menuitem value="Estatística de Produtos (+/-Vendidos)" />
+                <p:menuitem value="Produtos com consignados" />
+                <p:menuitem value="Produtos em Serviços" />
+                <p:menuitem value="Relação de Cobrança por Cobradores" />
+                <p:menuitem value="Pedidos em Aberto" />
+                <p:menuitem value="Vendas por Período" />
+                <p:menuitem value="Aniversariantes do mês" />
+            </p:submenu>
+            <p:menuitem value="Sair" action="#{loginController.logout}"/>
+        </p:menubar>
+    </ui:composition>
+
+</html>

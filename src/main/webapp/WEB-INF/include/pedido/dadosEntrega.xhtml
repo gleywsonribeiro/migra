@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:panelGrid id="entrega" columns="4" style="width: 100%" >
+        <p:outputLabel value="Data da entrega" for="dataEntrega"/>
+        <p:calendar id="dataEntrega" size="10" pattern="dd/MM/yyyy" disabled="#{pedidoController.pedido.emitido}"
+                    value="#{pedidoController.pedido.dataEntrega}" required="true"/>
+
+        <p:outputLabel value="Endereço do Cliente" for="endcliente"/>
+        <p:selectBooleanCheckbox id="endcliente" value="#{pedidoController.usarEnderecoCliente}" disabled="#{pedidoController.pedido.emitido}">
+            <p:ajax listener="#{pedidoController.ajustarEndereco()}" update="entrega" event="change"/>
+        </p:selectBooleanCheckbox>
+
+        <p:outputLabel value="Logradoutro" for="entregaLogradouro"/>
+        <p:inputText id="entregaLogradouro" size="50" value="#{pedidoController.pedido.enderecoEntrega.logradouro}"
+                     disabled="#{pedidoController.pedido.emitido}" required="true"/>
+
+        <p:outputLabel value="Número" for="entregaNumero" />
+        <p:inputText id="entregaNumero" size="5" value="#{pedidoController.pedido.enderecoEntrega.numero}" required="true" disabled="#{pedidoController.pedido.emitido}"/>
+
+        <p:outputLabel value="Complemento" for="entregaComplemento"/>
+        <p:inputText id="entregaComplemento" size="50" value="#{pedidoController.pedido.enderecoEntrega.complemento}" disabled="#{pedidoController.pedido.emitido}"/>
+
+        <p:outputLabel value="Estado" for="estado"/>
+        <p:selectOneMenu id="estado" style="width: 100px" value="#{pedidoController.pedido.enderecoEntrega.estado}"
+                         disabled="#{pedidoController.pedido.emitido}"
+                         filter="true" filterMatchMode="startsWith"
+                         required="true" requiredMessage="Escolha um Estado" converter="#{estadoConverter}">
+            <f:selectItem itemLabel="Selecione"/>
+            <f:selectItems value="#{estadosController.estados}" var="estado"
+                           itemValue="#{estado}" itemLabel="#{estado.uf}"/>
+            <p:ajax update="cidade" process="@this"/>
+        </p:selectOneMenu>
+
+        <p:outputLabel value="Cidade" for="cidade"/>
+        <p:selectOneMenu id="cidade" style="width: 100px" value="#{pedidoController.pedido.enderecoEntrega.cidade}"
+                         disabled="#{pedidoController.pedido.emitido}"
+                         filter="true" filterMatchMode="startsWith"
+                         required="true" requiredMessage="Escolha uma Cidade" converter="#{cidadeConverter}">
+            <f:selectItem itemLabel="Selecione"/>
+            <f:selectItems value="#{pedidoController.pedido.enderecoEntrega.estado.cidades}" var="cidade"
+                           itemValue="#{cidade}" itemLabel="#{cidade.nome}"/>
+        </p:selectOneMenu>
+
+        <p:outputLabel value="Cep" for="entregaCep"/>
+        <p:inputText id="entregaCep" size="10" value="#{pedidoController.pedido.enderecoEntrega.cep}" 
+                     disabled="#{pedidoController.pedido.emitido}" required="true"/>
+    </h:panelGrid>
+</ui:composition>

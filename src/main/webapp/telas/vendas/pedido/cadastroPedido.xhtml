@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../../WEB-INF/template/layout.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="titulo">Pedido</ui:define>
+
+    <ui:define name="corpo">
+        <h:form id="formPedido">
+            <p:messages autoUpdate="true" closable="true"/>
+            <h:outputText value="Novo Pedido" style="font-size: x-large; font-weight: 400; color: darkblue"/>
+            <p:toolbar style="margin-top: 20px">
+                <p:toolbarGroup>
+                    <p:commandButton value="Novo" icon="fa fa-file" action="#{pedidoController.novo()}" process="@this" update="@form"/> 
+                    <p:commandButton value="Salvar" icon="fa fa-save" id="botaoSalvar" process="@this painel :formPedido:tabview:entrega" action="#{pedidoController.salvar()}" update="@form"/>
+                </p:toolbarGroup>
+                <p:toolbarGroup align="right">
+                    <p:commandButton id="emitir" icon="fa fa-check" value="Emitir" disabled="#{pedidoController.pedido.emitido}" process="@this painel :formPedido:tabview:entrega" action="#{pedidoController.emitir()}" update="@form"/>
+                    <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-remove" disabled="#{pedidoController.pedido.naoEmitido}"/>
+                    <p:commandButton id="enviar" value="Enviar por e-mail" icon="fa fa-send" disabled="#{pedidoController.pedido.novo}"/>
+                    <p:commandButton value="Imprimir" type="button" icon="fa fa-print" >
+                        <p:printer target="formPedido" />
+                    </p:commandButton>
+                    <p:separator/>
+
+                    <p:commandButton value="Pesquisar" process="@this" action="pesquisaPedido?faces-redirect=true" icon="fa fa-search"/>
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <p:defaultCommand target="botaoSalvar"/>
+
+            <p:panel>
+
+                <ui:include src="/WEB-INF/include/pedido/capa.xhtml" />
+
+                <p:tabView style="margin-top: 20px" id="tabview">
+                    <p:tab title="Itens">
+                        <ui:include src="/WEB-INF/include/pedido/itens.xhtml"/>
+                        <!--                    <ui:include src="../WEB-INF/template/pedido/itensPedido.xhtml" />-->
+                    </p:tab>
+                    <p:tab title="Dados de entrega">
+                        <ui:include src="/WEB-INF/include/pedido/dadosEntrega.xhtml" />
+                    </p:tab>
+                    <p:tab title="Observação">
+                        <h:panelGroup layout="block" style="padding: 3px">
+                            <p:inputTextarea rows="6" style="width: 100%; resize: none" value="#{pedidoController.pedido.observacao}"/>
+                        </h:panelGroup>
+                    </p:tab>
+                </p:tabView>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
